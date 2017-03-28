@@ -10,10 +10,10 @@ namespace ToBoldlyPlay.Tweening
 	public class RotationInterpolator : Interpolator<Quaternion>
 	{
 		[SerializeField]
-		private new Transform transform;
+		private Space space;
 
 		[SerializeField]
-		private Space space;
+		private new Transform transform;
 
 		public override void Interpolate ( float t )
 		{

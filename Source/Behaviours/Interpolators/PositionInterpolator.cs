@@ -10,11 +10,10 @@ namespace ToBoldlyPlay.Tweening
 	public class PositionInterpolator : Interpolator<Vector3>
 	{
 		[SerializeField]
-		private new Transform transform;
-
-		[SerializeField]
 		private Space space;
 
+		[SerializeField]
+		private new Transform transform;
 
 		public override void Interpolate ( float t )
 		{
