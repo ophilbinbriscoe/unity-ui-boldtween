@@ -4,6 +4,10 @@ Tweening library built on top of Unity's open-source UI namespace.
 ## Installation
 Download and unzip into your project.
 
+Works best with:
+* [BoldEditor](https://github.com/ophilbinbriscoe/BoldEditor) (nicer inspector)
+* [BoldEvent](https://github.com/ophilbinbriscoe/BoldEvent) (loose coupling)
+
 ### Projeny
 Projeny is an excellent dependency management solution for Unity. While it is not required, all of the ToBoldlyPlay packages were designed with a Projeny workflow in mind.
 
