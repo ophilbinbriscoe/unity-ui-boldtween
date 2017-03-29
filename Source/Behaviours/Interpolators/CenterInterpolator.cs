@@ -7,11 +7,9 @@ namespace ToBoldlyPlay.Tweening
 {
 	public class CenterInterpolator : Interpolator
 	{
-		[SerializeField]
-		private RectTransform.Edge edge;
+		public RectTransform.Edge edge;
 
-		[SerializeField]
-		private RectTransform rect;
+		public RectTransform rect;
 
 		public override void Interpolate ( float t )
 		{

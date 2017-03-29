@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-namespace ToBoldlyPlay
+namespace ToBoldlyPlay.Definitions
 {
 	[InitializeOnLoad]
 	public static class Definitions_Tween

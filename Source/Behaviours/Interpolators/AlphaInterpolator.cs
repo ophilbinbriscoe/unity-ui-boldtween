@@ -9,8 +9,7 @@ namespace ToBoldlyPlay.Tweening
 	[RequireComponent( typeof( CanvasGroup ) )]
 	public class AlphaInterpolator : Interpolator
 	{
-		[SerializeField]
-		private CanvasGroup group;
+		public CanvasGroup group;
 
 		[SerializeField]
 		[Range( 0.0f, 1.0f )]

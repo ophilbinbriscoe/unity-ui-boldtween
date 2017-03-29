@@ -14,7 +14,6 @@ namespace ToBoldlyPlay.Tweening
 		[Serializable]
 		public class InterpolateEvent : UnityEvent<Color> { }
 
-		[SerializeField]
 		public InterpolateEvent onInterpolate;
 
 		protected override Color DefaultA

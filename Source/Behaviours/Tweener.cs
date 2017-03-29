@@ -53,10 +53,6 @@ namespace ToBoldlyPlay.Tweening
 		}
 
 		[SerializeField]
-		[Tooltip( "If true, tweens will run regardless of whether or not this behaviour is active and enabled." )]
-		private bool runInBackground = true;
-
-		[SerializeField]
 		private InitializationType initialize = InitializationType.OnAwake;
 
 		[SerializeField]
@@ -215,7 +211,7 @@ namespace ToBoldlyPlay.Tweening
 			bool invert = (modifiers & ModifierFlags.Invert) != 0;
 			bool min = (modifiers & ModifierFlags.Min) != 0;
 			bool max = (modifiers & ModifierFlags.Max) != 0;
-			bool debug = (modifiers & ModifierFlags.Debug) != 0;
+			//bool debug = (modifiers & ModifierFlags.Debug) != 0;
 
 			/// Infinite loop guard
 			while ( DeltaTime == 0.0f )

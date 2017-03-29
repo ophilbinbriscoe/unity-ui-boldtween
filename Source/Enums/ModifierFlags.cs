@@ -12,6 +12,6 @@ namespace ToBoldlyPlay.Tweening
 		Max = 2,
 		Reverse = 4,
 		Invert = 8,
-		Debug = 16
+		//Debug = 16
 	}
 }

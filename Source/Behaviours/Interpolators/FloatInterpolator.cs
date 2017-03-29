@@ -13,7 +13,6 @@ namespace ToBoldlyPlay.Tweening
 		[Serializable]
 		public class InterpolateEvent : UnityEvent<float> { }
 
-		[SerializeField]
 		public InterpolateEvent onInterpolate;
 
 		public override void Interpolate ( float t )

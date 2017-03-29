@@ -8,38 +8,32 @@ namespace ToBoldlyPlay.Tweening
 	[RequireComponent( typeof( RectTransform ) )]
 	public class EdgeInterpolator : Interpolator
 	{
-		[SerializeField]
-		private RectTransform.Edge edge;
+		public RectTransform.Edge edge;
 
-		[SerializeField]
 		[Tooltip( "If true, the RectTransform will fly out to the opposite edge.")]
-		private bool across;
+		public bool across;
 
-		[SerializeField]
-		[HideInInspector]
-		private RectTransform rect;
-
-		private void Awake ()
-		{
-			rect = GetComponent<RectTransform>();
-		}
+		public RectTransform rect;
 
 		public override void Interpolate ( float t )
 		{
-			float dimension = rect.rect.height;
+			if ( rect != null )
+			{
+				float dimension = rect.rect.height;
 
-			if ( edge == RectTransform.Edge.Left || edge == RectTransform.Edge.Right )
-			{
-				dimension = rect.rect.width;
-			}
+				if ( edge == RectTransform.Edge.Left || edge == RectTransform.Edge.Right )
+				{
+					dimension = rect.rect.width;
+				}
 
-			if ( across )
-			{
-				rect.SetInsetAndSizeFromParentEdge( Opposite( edge ), dimension * (t - 0.5f) * 2.0f, dimension );
-			}
-			else
-			{
-				rect.SetInsetAndSizeFromParentEdge( edge, dimension * (t - 1.0f), dimension );
+				if ( across )
+				{
+					rect.SetInsetAndSizeFromParentEdge( Opposite( edge ), dimension * (t - 0.5f) * 2.0f, dimension );
+				}
+				else
+				{
+					rect.SetInsetAndSizeFromParentEdge( edge, dimension * (t - 1.0f), dimension );
+				}
 			}
 		}
 
