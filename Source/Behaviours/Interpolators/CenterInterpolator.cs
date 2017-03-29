@@ -5,11 +5,25 @@ using UnityEngine;
 
 namespace ToBoldlyPlay.Tweening
 {
-	public class CenterInterpolator : Interpolator
+	public class CenterInterpolator : Interpolator, IRect
 	{
 		public RectTransform.Edge edge;
 
-		public RectTransform rect;
+		[SerializeField]
+		private RectTransform rect;
+
+		public RectTransform Rect
+		{
+			get
+			{
+				return rect;
+			}
+
+			set
+			{
+				rect = value;
+			}
+		}
 
 		public override void Interpolate ( float t )
 		{

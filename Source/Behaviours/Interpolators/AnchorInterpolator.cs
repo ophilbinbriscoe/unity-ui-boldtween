@@ -7,7 +7,19 @@ using UnityEngine.UI;
 
 namespace ToBoldlyPlay.Tweening
 {
-	public class AnchoredPositionInterpolator : Interpolator<Vector2>, IRect
+	[Serializable]
+	public struct Anchor2D
+	{
+		public Vector2 min, max;
+
+		public Anchor2D ( Vector2 min, Vector2 max )
+		{
+			this.min = min;
+			this.max = max;
+		}
+	}
+
+	public class AnchorInterpolator : Interpolator<Anchor2D>, IRect
 	{
 		[SerializeField]
 		private RectTransform rect;
@@ -29,7 +41,8 @@ namespace ToBoldlyPlay.Tweening
 		{
 			if ( rect != null )
 			{
-				rect.anchoredPosition = Vector2.Lerp( a, b, t );
+				rect.anchorMin = Vector2.Lerp( a.min, b.min, t );
+				rect.anchorMax = Vector2.Lerp( a.max, b.max, t );
 			}
 		}
 	}

@@ -28,7 +28,7 @@ namespace ToBoldlyPlay.Tweening
 		private AnimationCurve curve = AnimationCurve.EaseInOut( 0.0f, 0.0f, 1.0f, 1.0f );
 
 		[SerializeField]
-		[Range( float.Epsilon, float.MaxValue )]
+		[Range( 0.0f, float.MaxValue )]
 		private float duration = 1.0f;
 
 		[SerializeField]
@@ -36,7 +36,7 @@ namespace ToBoldlyPlay.Tweening
 		private ModifierFlags modifiers;
 
 		[SerializeField]
-		[Range( float.Epsilon, float.MaxValue )]
+		[Range( 0.0f, float.MaxValue )]
 		private float multiplier = 1.0f;
 
 		public float Multiplier
@@ -164,6 +164,11 @@ namespace ToBoldlyPlay.Tweening
 			}
 		}
 
+		public void Tween ( TweenPreset preset )
+		{
+			Tween( preset.Curve, preset.Duration );
+		}
+
 		public void Tween ( AnimationCurve curve, float duration, ModifierFlags modifiers = 0 )
 		{
 			Stop();
@@ -257,21 +262,33 @@ namespace ToBoldlyPlay.Tweening
 			{
 				bool done = false;
 
-				while ( !done )
+				float t = 0.0f;
+				if ( duration > 0.0f )
 				{
-					float t = (time - start) / duration;
+					while ( !done )
+					{
+						t = (time - start) / duration;
 
-					t = Calculate( t, curve, reverse, invert, min, max, ref done );
+						t = Calculate( t, curve, reverse, invert, min, max, ref done );
 
-					/// Apply Tween
+						/// Apply Tween
+						Interpolate( t );
+
+						onTweenUpdate.Invoke( t );
+
+						/// Increment time
+						time += DeltaTime;
+
+						yield return null;
+					}
+				}
+				else
+				{
+					t = Calculate( 1.0f, curve, reverse, invert, min, max, ref done );
+
 					Interpolate( t );
 
 					onTweenUpdate.Invoke( t );
-
-					/// Increment time
-					time += DeltaTime;
-
-					yield return null;
 				}
 			}
 

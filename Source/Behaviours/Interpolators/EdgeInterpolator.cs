@@ -6,14 +6,28 @@ using UnityEngine;
 namespace ToBoldlyPlay.Tweening
 {
 	[RequireComponent( typeof( RectTransform ) )]
-	public class EdgeInterpolator : Interpolator
+	public class EdgeInterpolator : Interpolator, IRect
 	{
 		public RectTransform.Edge edge;
 
 		[Tooltip( "If true, the RectTransform will fly out to the opposite edge.")]
 		public bool across;
 
-		public RectTransform rect;
+		[SerializeField]
+		private RectTransform rect;
+
+		public RectTransform Rect
+		{
+			get
+			{
+				return rect;
+			}
+
+			set
+			{
+				rect = value;
+			}
+		}
 
 		public override void Interpolate ( float t )
 		{

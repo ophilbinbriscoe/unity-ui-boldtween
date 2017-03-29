@@ -52,18 +52,28 @@ namespace ToBoldlyPlay.Tweening
 
 			EditorGUILayout.Space();
 
+			EditorGUILayout.LabelField( "Triggers", EditorStyles.boldLabel );
+
+			EditorGUILayout.BeginVertical( EditorStyles.helpBox );
+
+			EditorGUI.indentLevel++;
 			EditorGUILayout.PropertyField( events );
+			EditorGUI.indentLevel--;
 
 			EditorGUILayout.PropertyField( initialize );
 
 			if ( initialize.enumValueIndex > 0 )
 			{
 				EditorGUI.indentLevel++;
-
 				EditorGUILayout.PropertyField( initialPosition );
-
 				EditorGUI.indentLevel--;
 			}
+				
+			EditorGUILayout.EndVertical();
+
+			EditorGUILayout.LabelField( "Settings", EditorStyles.boldLabel );
+
+			EditorGUILayout.BeginVertical( EditorStyles.helpBox );
 
 			EditorGUILayout.PropertyField( type );
 
@@ -85,32 +95,64 @@ namespace ToBoldlyPlay.Tweening
 			EditorGUILayout.PropertyField( modifiers );
 			EditorGUILayout.PropertyField( timeType );
 
-			EditorGUILayout.Space();
+			EditorGUI.indentLevel++;
+			DrawList( siblings );
+			EditorGUI.indentLevel--;
+
+			EditorGUILayout.EndVertical();
+
+			EditorGUILayout.LabelField( "Outputs", EditorStyles.boldLabel );
+
+			EditorGUILayout.BeginVertical( EditorStyles.helpBox );
+
+			EditorGUI.indentLevel++;
 
 			DrawList( interpolators );
 
-			DrawList( siblings );
-
 			onTweenStart.isExpanded = EditorGUILayout.Foldout( onTweenStart.isExpanded, new GUIContent( "Callbacks" ) );
+
+			EditorGUI.indentLevel--;
 
 			if ( onTweenStart.isExpanded )
 			{
 				EditorGUI.indentLevel++;
-
 				EditorGUILayout.PropertyField( onTweenStart );
 				EditorGUILayout.PropertyField( onTweenEnd );
 				EditorGUILayout.PropertyField( onTweenUpdate );
-
 				EditorGUI.indentLevel--;
 			}
+
+			EditorGUILayout.EndVertical();
 
 			serializedObject.ApplyModifiedProperties();
 
 			if ( Application.isPlaying )
 			{
+				var tweener = target as Tweener;
+
+				EditorGUILayout.BeginHorizontal();
+
+				EditorGUILayout.Separator();
+
+				var rect = GUILayoutUtility.GetLastRect().Translate( 0, 8.0f );
+
+				var content = new GUIContent( string.Format( "{0:0.00}", tweener.Position ), "Position" );
+
+				EditorGUILayout.LabelField( content, EditorStyles.miniLabel, GUILayout.Width( 30.0f ) );
+
+				EditorGUILayout.EndHorizontal();
+
+				var style = EditorGUIUtility.GetBuiltinSkin( EditorSkin.Scene ).FindStyle( "ProgressBarBack" );
+
+				GUI.Box( rect, GUIContent.none, style );
+
+				style = EditorGUIUtility.GetBuiltinSkin( EditorSkin.Scene ).FindStyle( "ProgressBarBar" );
+
+				GUI.Box( rect.SetWidth( rect.width * tweener.Position ), GUIContent.none, style );
+
 				if ( GUILayout.Button( "Tween" ) )
 				{
-					(target as Tweener).Tween();
+					tweener.Tween();
 				}
 			}
 		}

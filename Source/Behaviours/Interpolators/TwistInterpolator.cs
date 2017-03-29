@@ -7,10 +7,23 @@ using UnityEngine.UI;
 
 namespace ToBoldlyPlay.Tweening
 {
-	public class TwistInterpolator : Interpolator<float>
+	public class TwistInterpolator : Interpolator<float>, IRect
 	{
 		[SerializeField]
 		private RectTransform rect;
+
+		public RectTransform Rect
+		{
+			get
+			{
+				return rect;
+			}
+
+			set
+			{
+				rect = value;
+			}
+		}
 
 		public override void Interpolate ( float t )
 		{
