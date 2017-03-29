@@ -11,6 +11,7 @@ using UnityEditorInternal;
 
 namespace ToBoldlyPlay.Tweening
 {
+#if BOLD_EDITOR
 	[CustomEditor( typeof( Tweener ) )]
 	public class TweenerEditor : BoldEditor
 	{
@@ -114,4 +115,5 @@ namespace ToBoldlyPlay.Tweening
 			}
 		}
 	}
+#endif
 }

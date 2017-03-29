@@ -11,6 +11,7 @@ using UnityEditorInternal;
 
 namespace ToBoldlyPlay.Tweening
 {
+#if BOLD_EDITOR
 	[CustomEditor( typeof( InterpolatorGroup ) )]
 	public class InterpolatorGroupEditor : BoldEditor
 	{
@@ -32,4 +33,5 @@ namespace ToBoldlyPlay.Tweening
 			serializedObject.ApplyModifiedProperties();
 		}
 	}
+#endif
 }

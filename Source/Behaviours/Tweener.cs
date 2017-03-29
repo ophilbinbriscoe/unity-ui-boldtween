@@ -8,12 +8,20 @@ namespace ToBoldlyPlay.Tweening
 {
 	using Events;
 
-	public partial class Tweener : EventObjectHandler, IInterpolator
+	public partial class Tweener :
+#if BOLD_EVENT
+		EventObjectHandler, 
+#else
+		MonoBehaviour,
+#endif
+		IInterpolator
 	{
 		[SerializeField]
 		private TweenType type = TweenType.Preset;
 
+#if BOLD_EDITOR
 		[AssetField]
+#endif
 		public TweenPreset preset;
 
 		[SerializeField]
@@ -103,6 +111,7 @@ namespace ToBoldlyPlay.Tweening
 		[Tooltip( "Invoked every frame that a Tween is in progress.")]
 		public TweenEvent onTweenUpdate;
 
+#if BOLD_EVENT
 		protected override void OnEnable ()
 		{
 			if ( initialize == InitializationType.OnEnable )
@@ -112,6 +121,20 @@ namespace ToBoldlyPlay.Tweening
 
 			base.OnEnable();
 		}
+
+		protected override void HandleInvoke ( EventObject @event )
+		{
+			Tween();
+		}
+#else
+		private void OnEnable ()
+		{
+			if ( initialize == InitializationType.OnEnable )
+			{
+				Interpolate( initialPosition );
+			}
+		}
+#endif
 
 		private void Awake ()
 		{
@@ -127,11 +150,6 @@ namespace ToBoldlyPlay.Tweening
 			{
 				Interpolate( initialPosition );
 			}
-		}
-
-		protected override void HandleInvoke ( EventObject @event )
-		{
-			Tween();
 		}
 
 		public void Tween ()
