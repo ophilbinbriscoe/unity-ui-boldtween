@@ -101,7 +101,7 @@ namespace ToBoldlyPlay.Tweening
 
 			EditorGUILayout.EndVertical();
 
-			EditorGUILayout.LabelField( "Outputs", EditorStyles.boldLabel );
+			EditorGUILayout.LabelField( "Side-Effects", EditorStyles.boldLabel );
 
 			EditorGUILayout.BeginVertical( EditorStyles.helpBox );
 
@@ -155,6 +155,11 @@ namespace ToBoldlyPlay.Tweening
 					tweener.Tween();
 				}
 			}
+		}
+
+		public override bool RequiresConstantRepaint ()
+		{
+			return (target as Tweener).IsTweening;
 		}
 	}
 #endif

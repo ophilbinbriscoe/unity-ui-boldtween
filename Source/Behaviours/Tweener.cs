@@ -22,6 +22,7 @@ namespace ToBoldlyPlay.Tweening
 #if BOLD_EDITOR
 		[AssetField]
 #endif
+		[Tooltip( "Defines a curve and duration." )]
 		public TweenPreset preset;
 
 		[SerializeField]
@@ -37,6 +38,7 @@ namespace ToBoldlyPlay.Tweening
 
 		[SerializeField]
 		[Range( 0.0f, float.MaxValue )]
+		[Tooltip( "The preset duration is multiplied with this value." )]
 		private float multiplier = 1.0f;
 
 		public float Multiplier
@@ -73,6 +75,14 @@ namespace ToBoldlyPlay.Tweening
 			set
 			{
 				
+			}
+		}
+
+		public bool IsTweening
+		{
+			get
+			{
+				return coroutine != null;
 			}
 		}
 
@@ -160,6 +170,10 @@ namespace ToBoldlyPlay.Tweening
 				{
 					Tween( preset.Curve, preset.Duration * multiplier, modifiers );
 				}
+				else
+				{
+					Debug.LogWarning( "No TweenPreset found, please assign one in the inspector.", this );
+				}
 				break;
 			}
 		}
@@ -206,6 +220,28 @@ namespace ToBoldlyPlay.Tweening
 			}
 		}
 
+		public void Toggle ( ModifierFlags modifier )
+		{
+			modifiers = (modifiers & modifier) > 0 ? modifiers & ~modifier : modifiers | modifier; 
+		}
+
+		public void ToggleMinMaxReverse ()
+		{
+			ToggleReverse();
+			ToggleMinMax();
+		}
+
+		public void ToggleReverse ()
+		{
+			Toggle( ModifierFlags.Reverse );
+		}
+
+		public void ToggleMinMax ()
+		{
+			Toggle( ModifierFlags.Min );
+			Toggle( ModifierFlags.Max );
+		}
+		
 		private IEnumerator Coroutine ( AnimationCurve curve, float duration, ModifierFlags modifiers )
 		{
 			/// Timestamp
@@ -228,7 +264,7 @@ namespace ToBoldlyPlay.Tweening
 			{
 				bool done = false;
 
-				float t = Calculate( 0.0f, curve, reverse, invert, min, max, ref done );
+				float t = Calculate( 0.0f, curve, reverse, invert, false, false, ref done );
 
 				/// Simulate Tween until t is lesser or equal to the current position
 				while ( t > position && !done )
@@ -236,7 +272,7 @@ namespace ToBoldlyPlay.Tweening
 					/// Increment
 					time += DeltaTime;
 
-					t = Calculate( (time - start) / duration, curve, reverse, invert, min, max, ref done );
+					t = Calculate( (time - start) / duration, curve, reverse, invert, false, false, ref done );
 				}
 			}
 
