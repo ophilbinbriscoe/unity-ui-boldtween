@@ -117,6 +117,26 @@ namespace ToBoldlyPlay.Tweening
 		[Tooltip( "Invoked every frame that a Tween is in progress.")]
 		public TweenEvent onTweenUpdate;
 
+		private bool isPaused;
+
+		public bool IsPaused
+		{
+			get
+			{
+				return isPaused;
+			}
+		}
+
+		public void Pause ()
+		{
+			isPaused = true;
+		}
+
+		public void Resume ()
+		{
+			isPaused = false;
+		}
+
 #if BOLD_EVENT
 		protected override void OnEnable ()
 		{
@@ -194,6 +214,8 @@ namespace ToBoldlyPlay.Tweening
 					sibling.Stop();
 				}
 			}
+
+			isPaused = false;
 
 			coroutine = StartCoroutine( Coroutine( curve, duration, modifiers ) );
 		}
@@ -299,21 +321,25 @@ namespace ToBoldlyPlay.Tweening
 				bool done = false;
 
 				float t = 0.0f;
+
 				if ( duration > 0.0f )
 				{
 					while ( !done )
 					{
-						t = (time - start) / duration;
+						if ( !isPaused )
+						{
+							t = (time - start) / duration;
 
-						t = Calculate( t, curve, reverse, invert, min, max, ref done );
+							t = Calculate( t, curve, reverse, invert, min, max, ref done );
 
-						/// Apply Tween
-						Interpolate( t );
+							/// Apply Tween
+							Interpolate( t );
 
-						onTweenUpdate.Invoke( t );
+							onTweenUpdate.Invoke( t );
 
-						/// Increment time
-						time += DeltaTime;
+							/// Increment time
+							time += DeltaTime;
+						}
 
 						yield return null;
 					}

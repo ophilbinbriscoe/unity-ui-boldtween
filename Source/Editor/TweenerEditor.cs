@@ -11,9 +11,11 @@ using UnityEditorInternal;
 
 namespace ToBoldlyPlay.Tweening
 {
-#if BOLD_EDITOR
 	[CustomEditor( typeof( Tweener ) )]
-	public class TweenerEditor : ExtendedEditor
+	public class TweenerEditor
+#if BOLD_EDITOR
+		: ExtendedEditor
+#endif
 	{
 		SerializedProperty
 			events,
@@ -96,7 +98,11 @@ namespace ToBoldlyPlay.Tweening
 			EditorGUILayout.PropertyField( timeType );
 
 			EditorGUI.indentLevel++;
+#if BOLD_EDITOR
 			DrawList( siblings );
+#else
+			EditorGUILayout.PropertyField( siblings );
+#endif
 			EditorGUI.indentLevel--;
 
 			EditorGUILayout.EndVertical();
@@ -107,7 +113,11 @@ namespace ToBoldlyPlay.Tweening
 
 			EditorGUI.indentLevel++;
 
+#if BOLD_EDITOR
 			DrawList( interpolators );
+#else
+			EditorGUILayout.PropertyField( interpolators );
+#endif
 
 			onTweenStart.isExpanded = EditorGUILayout.Foldout( onTweenStart.isExpanded, new GUIContent( "Callbacks" ) );
 
@@ -154,6 +164,26 @@ namespace ToBoldlyPlay.Tweening
 				{
 					tweener.Tween();
 				}
+
+				EditorGUILayout.BeginHorizontal();
+
+				using ( var disabled = new EditorGUI.DisabledScope( !tweener.IsTweening || tweener.IsPaused ) )
+				{
+					if ( GUILayout.Button( "Pause", EditorStyles.miniButtonLeft ) )
+					{
+						tweener.Pause();
+					}
+				}
+
+				using ( var disabled = new EditorGUI.DisabledScope( !tweener.IsTweening || !tweener.IsPaused ) )
+				{
+					if ( GUILayout.Button( "Resume", EditorStyles.miniButtonLeft ) )
+					{
+						tweener.Resume();
+					}
+				}
+
+				EditorGUILayout.EndHorizontal();
 			}
 		}
 
@@ -162,5 +192,4 @@ namespace ToBoldlyPlay.Tweening
 			return (target as Tweener).IsTweening;
 		}
 	}
-#endif
 }
