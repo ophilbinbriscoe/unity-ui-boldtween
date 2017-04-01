@@ -6,7 +6,7 @@ The Tweener behaviour is the core around which the rest of BoldTween has been bu
 
 Each Tweener outputs the result of evaluating an AnimationCurve based on the start time and duration of the current tween, while the tween is active. This output can be routed in a number of ways. Unity and native C# callbacks are available, as well as the IInterpolator interface, through which reusable tweening functionalities can be implemented.
 
-Tweeners can tween using a curve and duration defined in the inspector, in a preset asset, or from any other source through various overlaods of the <c>Tween( ... )</c> method
+Tweeners can tween using a curve and duration defined in the inspector, in a preset asset, or from any other source through various overlaods of the `Tween()` method.
 ## Status
 BoldTween was used in one of Concordia's submissions to the annual Ubisoft Game Lab challenge. There are no known issues at the moment.
 
