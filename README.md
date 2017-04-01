@@ -8,10 +8,10 @@ Each Tweener outputs the result of evaluating an AnimationCurve based on the sta
 
 Tweeners can tween using a curve and duration defined in the inspector, in a preset asset, or from any other source through various overlaods of the `Tween()` method. They can run using scaled or unscaled time, and a handful of flags can be used to modify how the curve is interpreted:
 
-* Reverse - evaluates the curve backwards.
-* Invert - subtracts from 1 the evaluated value.
-* Min - iterates over the curve until a value less than the Tweener's current value is found.
-* Max - iterates over the curve until a value greater than the Tweener's current value is found.
+* `Reverse` evaluates the curve backwards.
+* `Invert` subtracts from 1 the evaluated value.
+* `Min` iterates over the curve until a value less than the Tweener's current value is found.
+* `Max` iterates over the curve until a value greater than the Tweener's current value is found.
 
 When used in conjunction with BoldEvent, a list of EventObject references can be specified to use as tween triggers by a given Tweener.
 
