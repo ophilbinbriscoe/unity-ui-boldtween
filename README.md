@@ -13,6 +13,8 @@ Tweeners can tween using a curve and duration defined in the inspector, in a pre
 * Min - iterates over the curve until a value less than the Tweener's current value is found.
 * Max - iterates over the curve until a value greater than the Tweener's current value is found.
 
+When used in conjunction with BoldEvent, a list of EventObject references can be specified to use as tween triggers by a given Tweener.
+
 ## Status
 BoldTween was used in one of Concordia's submissions to the annual Ubisoft Game Lab challenge. There are no known issues at the moment.
 
