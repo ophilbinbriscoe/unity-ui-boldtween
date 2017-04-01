@@ -13,7 +13,7 @@ namespace ToBoldlyPlay.Tweening
 {
 #if BOLD_EDITOR
 	[CustomEditor( typeof( InterpolatorGroup ) )]
-	public class InterpolatorGroupEditor : BoldEditor
+	public class InterpolatorGroupEditor : ExtendedEditor
 	{
 		SerializedProperty interpolators;
 

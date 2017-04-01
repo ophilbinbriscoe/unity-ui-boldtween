@@ -13,7 +13,7 @@ namespace ToBoldlyPlay.Tweening
 {
 #if BOLD_EDITOR
 	[CustomEditor( typeof( Tweener ) )]
-	public class TweenerEditor : BoldEditor
+	public class TweenerEditor : ExtendedEditor
 	{
 		SerializedProperty
 			events,
