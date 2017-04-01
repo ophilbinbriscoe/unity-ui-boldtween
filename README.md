@@ -1,5 +1,5 @@
 # BoldTween
-Tweening library built for compatibility with Unity's open-source UI library.
+Tweening library built to work alongside Unity's open-source UI library.
 
 ## Design & Use
 The Tweener behaviour is the core around which the rest of BoldTween has been built.
