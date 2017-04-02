@@ -29,5 +29,17 @@ namespace ToBoldlyPlay.Tweening
 				return duration;
 			}
 		}
+
+		[SerializeField]
+		[EnumField( EnumStyle.Mask )]
+		private ModifierFlags modifiers;
+
+		public ModifierFlags Modifiers
+		{
+			get
+			{
+				return modifiers;
+			}
+		}
 	}
 }

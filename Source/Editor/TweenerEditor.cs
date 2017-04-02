@@ -90,11 +90,11 @@ namespace ToBoldlyPlay.Tweening
 			{
 				EditorGUILayout.PropertyField( curve );
 				EditorGUILayout.PropertyField( duration );
+				EditorGUILayout.PropertyField( modifiers );
 			}
 
 			EditorGUI.indentLevel--;
 
-			EditorGUILayout.PropertyField( modifiers );
 			EditorGUILayout.PropertyField( timeType );
 
 			EditorGUI.indentLevel++;

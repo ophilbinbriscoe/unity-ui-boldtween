@@ -191,10 +191,11 @@ namespace ToBoldlyPlay.Tweening
 			case TweenType.Custom:
 				Tween( curve, duration, modifiers );
 				break;
+
 			case TweenType.Preset:
 				if ( preset != null )
 				{
-					Tween( preset.Curve, preset.Duration * multiplier, modifiers );
+					Tween( preset.Curve, preset.Duration * multiplier, preset.Modifiers );
 				}
 				else
 				{
@@ -206,12 +207,12 @@ namespace ToBoldlyPlay.Tweening
 
 		public void Tween ( TweenPreset preset )
 		{
-			Tween( preset.Curve, preset.Duration );
+			Tween( preset.Curve, preset.Duration, preset.Modifiers );
 		}
 
-		public void Tween ( TweenPreset preset, ModifierFlags modifiers )
+		public void Tween ( TweenPreset preset, float multiplier )
 		{
-			Tween( preset.Curve, preset.Duration, modifiers );
+			Tween( preset.Curve, preset.Duration * multiplier, preset.Modifiers );
 		}
 
 		public void Tween ( AnimationCurve curve, float duration, ModifierFlags modifiers = 0 )
