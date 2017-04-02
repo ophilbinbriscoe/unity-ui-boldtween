@@ -21,6 +21,8 @@ namespace ToBoldlyPlay.Tweening
 	{
 		public RectTransform.Edge edge;
 
+		public bool invert;
+
 		public EdgePadding padding;
 
 		//[Tooltip( "If true, the RectTransform will fly out to the opposite edge.")]
@@ -46,30 +48,35 @@ namespace ToBoldlyPlay.Tweening
 		{
 			if ( rect != null )
 			{
+				if ( invert )
+				{
+					t = 1.0f - t;
+				}
+
 				float pad = Mathf.Lerp( -padding.@out, padding.@in, t );
 
 				switch ( edge )
 				{
 				case RectTransform.Edge.Left:
-					rect.pivot = Vector2.Lerp( Vector2.right, Vector2.zero, t );
+					rect.pivot = Vector2.Lerp( new Vector2( 1.0f, rect.pivot.y ), new Vector2( 0.0f, rect.pivot.y ), t );
 					rect.anchorMin = new Vector2( 0.0f, rect.anchorMin.y );
 					rect.anchorMax = new Vector2( 0.0f, rect.anchorMax.y );
 					rect.anchoredPosition = new Vector2( pad, rect.anchoredPosition.y );
 					break;
 				case RectTransform.Edge.Right:
-					rect.pivot = Vector2.Lerp( Vector2.zero, Vector2.right, t );
+					rect.pivot = Vector2.Lerp( new Vector2( 0.0f, rect.pivot.y ), new Vector2( 1.0f, rect.pivot.y ), t );
 					rect.anchorMin = new Vector2( 1.0f, rect.anchorMin.y );
 					rect.anchorMax = new Vector2( 1.0f, rect.anchorMax.y );
 					rect.anchoredPosition = new Vector2( -pad, rect.anchoredPosition.y );
 					break;
 				case RectTransform.Edge.Top:
-					rect.pivot = Vector2.Lerp( Vector2.zero, Vector2.up, t );
+					rect.pivot = Vector2.Lerp( new Vector2( rect.pivot.x, 0.0f ), new Vector2( rect.pivot.x, 1.0f ), t );
 					rect.anchorMin = new Vector2( rect.anchorMin.x, 1.0f );
 					rect.anchorMax = new Vector2( rect.anchorMax.x, 1.0f );
 					rect.anchoredPosition = new Vector2( rect.anchoredPosition.x, -pad );
 					break;
 				case RectTransform.Edge.Bottom:
-					rect.pivot = Vector2.Lerp( Vector2.up, Vector2.zero, t );
+					rect.pivot = Vector2.Lerp( new Vector2( rect.pivot.x, 1.0f ), new Vector2( rect.pivot.x, 0.0f ), t );
 					rect.anchorMin = new Vector2( rect.anchorMin.x, 0.0f );
 					rect.anchorMax = new Vector2( rect.anchorMax.x, 0.0f );
 					rect.anchoredPosition = new Vector2( rect.anchoredPosition.x, pad );
