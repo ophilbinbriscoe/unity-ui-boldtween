@@ -20,7 +20,7 @@ namespace ToBoldlyPlay.Tweening
 		private TweenType type = TweenType.Preset;
 
 #if BOLD_EDITOR
-		[AssetField]
+		[ReferenceField( allowSceneObjects = false, enumerate = true )]
 #endif
 		[Tooltip( "Defines a curve and duration." )]
 		public TweenPreset preset;
@@ -89,7 +89,15 @@ namespace ToBoldlyPlay.Tweening
 		[SerializeField]
 		private TimeType timeType = TimeType.Unscaled;
 
-		private float DeltaTime
+		private float LocalTime
+		{
+			get
+			{
+				return timeType == TimeType.Unscaled ? Time.unscaledTime : Time.time;
+			}
+		}
+
+		private float LocalDeltaTime
 		{
 			get
 			{
@@ -203,6 +211,11 @@ namespace ToBoldlyPlay.Tweening
 			Tween( preset.Curve, preset.Duration );
 		}
 
+		public void Tween ( TweenPreset preset, ModifierFlags modifiers )
+		{
+			Tween( preset.Curve, preset.Duration, modifiers );
+		}
+
 		public void Tween ( AnimationCurve curve, float duration, ModifierFlags modifiers = 0 )
 		{
 			Stop();
@@ -267,17 +280,19 @@ namespace ToBoldlyPlay.Tweening
 		private IEnumerator Coroutine ( AnimationCurve curve, float duration, ModifierFlags modifiers )
 		{
 			/// Timestamp
-			float start = Time.time, time = start;
+			float start = LocalTime, time = start;
 
 			/// Cache evaluated flags
-			bool reverse = (modifiers & ModifierFlags.Reverse) != 0;
-			bool invert = (modifiers & ModifierFlags.Invert) != 0;
 			bool min = (modifiers & ModifierFlags.Min) != 0;
 			bool max = (modifiers & ModifierFlags.Max) != 0;
+			bool reverse = (modifiers & ModifierFlags.Reverse) != 0;
+			bool invert = (modifiers & ModifierFlags.Invert) != 0;
+			bool loop = (modifiers & ModifierFlags.Loop) != 0;
+			bool ping = (modifiers & ModifierFlags.PingPong) != 0, pong = false;
 			//bool debug = (modifiers & ModifierFlags.Debug) != 0;
 
 			/// Infinite loop guard
-			while ( DeltaTime == 0.0f )
+			while ( LocalDeltaTime == 0.0f )
 			{
 				yield return null;
 			}
@@ -292,7 +307,7 @@ namespace ToBoldlyPlay.Tweening
 				while ( t > position && !done )
 				{
 					/// Increment
-					time += DeltaTime;
+					time += LocalDeltaTime;
 
 					t = Calculate( (time - start) / duration, curve, reverse, invert, false, false, ref done );
 				}
@@ -308,7 +323,7 @@ namespace ToBoldlyPlay.Tweening
 				while ( t < position && !done )
 				{
 					/// Increment
-					time += DeltaTime;
+					time += LocalDeltaTime;
 
 					t = Calculate( (time - start) / duration, curve, reverse, invert, false, false, ref done );
 				}
@@ -318,6 +333,8 @@ namespace ToBoldlyPlay.Tweening
 
 			/// Tween
 			{
+				Start:
+
 				bool done = false;
 
 				float t = 0.0f;
@@ -338,7 +355,7 @@ namespace ToBoldlyPlay.Tweening
 							onTweenUpdate.Invoke( t );
 
 							/// Increment time
-							time += DeltaTime;
+							time += LocalDeltaTime;
 						}
 
 						yield return null;
@@ -352,7 +369,41 @@ namespace ToBoldlyPlay.Tweening
 
 					onTweenUpdate.Invoke( t );
 				}
+
+				if ( ping )
+				{
+					ping = false;
+					pong = true;
+
+					reverse = !reverse;
+
+					goto Restart;
+				}
+
+				if ( loop )
+				{
+					if ( pong )
+					{
+						pong = false;
+						ping = true;
+
+						reverse = !reverse;
+					}
+
+					goto Restart;
+				}
+
+				goto Finish;
+
+				Restart:
+
+				start = LocalTime;
+				time = start;
+
+				goto Start;
 			}
+
+			Finish:
 
 			/// Cleanup
 			coroutine = null;
