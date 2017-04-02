@@ -29,7 +29,6 @@ namespace ToBoldlyPlay.Tweening
 		private AnimationCurve curve = AnimationCurve.EaseInOut( 0.0f, 0.0f, 1.0f, 1.0f );
 
 		[SerializeField]
-		[Range( 0.0f, float.MaxValue )]
 		private float duration = 1.0f;
 
 		[SerializeField]
@@ -297,35 +296,38 @@ namespace ToBoldlyPlay.Tweening
 				yield return null;
 			}
 
-			if ( min )
+			if ( duration > 0.0f )
 			{
-				bool done = false;
-
-				float t = Calculate( 0.0f, curve, reverse, invert, false, false, ref done );
-
-				/// Simulate Tween until t is lesser or equal to the current position
-				while ( t > position && !done )
+				if ( min )
 				{
-					/// Increment
-					time += LocalDeltaTime;
+					bool done = false;
 
-					t = Calculate( (time - start) / duration, curve, reverse, invert, false, false, ref done );
+					float t = Calculate( 0.0f, curve, reverse, invert, false, false, ref done );
+
+					/// Simulate Tween until t is lesser or equal to the current position
+					while ( t > position && !done )
+					{
+						/// Increment
+						time += LocalDeltaTime;
+
+						t = Calculate( (time - start) / duration, curve, reverse, invert, false, false, ref done );
+					}
 				}
-			}
 
-			if ( max )
-			{
-				bool done = false;
-
-				float t = Calculate( 0.0f, curve, reverse, invert, false, false, ref done );
-
-				/// Simulate Tween until t is greater or equal to the current position
-				while ( t < position && !done )
+				if ( max )
 				{
-					/// Increment
-					time += LocalDeltaTime;
+					bool done = false;
 
-					t = Calculate( (time - start) / duration, curve, reverse, invert, false, false, ref done );
+					float t = Calculate( 0.0f, curve, reverse, invert, false, false, ref done );
+
+					/// Simulate Tween until t is greater or equal to the current position
+					while ( t < position && !done )
+					{
+						/// Increment
+						time += LocalDeltaTime;
+
+						t = Calculate( (time - start) / duration, curve, reverse, invert, false, false, ref done );
+					}
 				}
 			}
 

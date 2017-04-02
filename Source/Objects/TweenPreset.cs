@@ -20,7 +20,6 @@ namespace ToBoldlyPlay.Tweening
 		}
 
 		[SerializeField]
-		[Range( 0.0f, float.MaxValue )]
 		private float duration = 1.0f;
 
 		public float Duration
