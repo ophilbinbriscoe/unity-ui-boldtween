@@ -7,14 +7,14 @@ using System.Text;
 using UnityEngine;
 using UnityEditor;
 
-using UnityEditorInternal;
-
 namespace ToBoldlyPlay.Tweening
 {
 	[CustomEditor( typeof( Tweener ) )]
 	public class TweenerEditor
 #if BOLD_EDITOR
 		: ExtendedEditor
+#else
+		: Editor
 #endif
 	{
 		SerializedProperty

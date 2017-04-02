@@ -17,7 +17,6 @@ namespace ToBoldlyPlay.Tweening
 		}
 	}
 
-	[RequireComponent( typeof( RectTransform ) )]
 	public class EdgeInterpolator : Interpolator, IRect
 	{
 		public RectTransform.Edge edge;
