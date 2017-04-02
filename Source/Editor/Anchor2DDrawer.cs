@@ -41,7 +41,7 @@ namespace ToBoldlyPlay.Tweening
 
 				rect = rect.StepRight( width * -0.66f );
 
-				float x = Mathf.Clamp01( EditorGUI.FloatField( rect, GUIContent.none, min.vector2Value.x ) );
+				float x = EditorGUI.FloatField( rect, GUIContent.none, min.vector2Value.x );
 
 				rect = rect.StepRight();
 
@@ -49,7 +49,7 @@ namespace ToBoldlyPlay.Tweening
 
 				rect = rect.StepRight( width * -0.66f );
 
-				float y = Mathf.Clamp01( EditorGUI.FloatField( rect, GUIContent.none, min.vector2Value.y ) );
+				float y = EditorGUI.FloatField( rect, GUIContent.none, min.vector2Value.y );
 
 				min.vector2Value = new Vector2( x, y );
 
@@ -63,7 +63,7 @@ namespace ToBoldlyPlay.Tweening
 
 				rect = rect.StepRight( width * -0.66f );
 
-				x = Mathf.Clamp01( EditorGUI.FloatField( rect, GUIContent.none, max.vector2Value.x ) );
+				x =EditorGUI.FloatField( rect, GUIContent.none, max.vector2Value.x );
 
 				rect = rect.StepRight();
 
@@ -71,7 +71,7 @@ namespace ToBoldlyPlay.Tweening
 
 				rect = rect.StepRight( width * -0.66f );
 
-				y = Mathf.Clamp01( EditorGUI.FloatField( rect, GUIContent.none, max.vector2Value.y ) );
+				y = EditorGUI.FloatField( rect, GUIContent.none, max.vector2Value.y );
 
 				max.vector2Value = new Vector2( x, y );
 
