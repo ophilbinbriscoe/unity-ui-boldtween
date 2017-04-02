@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ToBoldlyPlay.Tweening
 {
-	[CreateAssetMenu( fileName = "new TweenPreset.asset", menuName = "Tween Preset", order = 411 )]
+	[CreateAssetMenu( fileName = "new TweenPreset.asset", menuName = "Tween Preset", order = Const.ASSET_MENU_ORDER )]
 	public class TweenPreset : ScriptableObject
 	{
 		[SerializeField]
