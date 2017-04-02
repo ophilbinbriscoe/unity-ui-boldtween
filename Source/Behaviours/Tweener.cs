@@ -36,7 +36,6 @@ namespace ToBoldlyPlay.Tweening
 		private ModifierFlags modifiers;
 
 		[SerializeField]
-		[Range( 0.0f, float.MaxValue )]
 		[Tooltip( "The preset duration is multiplied with this value." )]
 		private float multiplier = 1.0f;
 
