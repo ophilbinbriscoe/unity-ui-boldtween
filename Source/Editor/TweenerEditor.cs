@@ -177,9 +177,17 @@ namespace ToBoldlyPlay.Tweening
 
 				using ( var disabled = new EditorGUI.DisabledScope( !tweener.IsTweening || !tweener.IsPaused ) )
 				{
-					if ( GUILayout.Button( "Resume", EditorStyles.miniButtonLeft ) )
+					if ( GUILayout.Button( "Resume", EditorStyles.miniButtonMid ) )
 					{
 						tweener.Resume();
+					}
+				}
+
+				using ( var disabled = new EditorGUI.DisabledScope( !tweener.IsTweening ) )
+				{
+					if ( GUILayout.Button( "Stop", EditorStyles.miniButtonRight ) )
+					{
+						tweener.Stop();
 					}
 				}
 
