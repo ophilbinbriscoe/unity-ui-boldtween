@@ -111,6 +111,32 @@ namespace ToBoldlyPlay.Tweening
 		[ReferenceField( allowSceneObjects = true, type = typeof( IInterpolator ) )]
 		private List<UnityEngine.Object> interpolators = new List<UnityEngine.Object>( 1 );
 
+		private List<IInterpolator> interfaces = new List<IInterpolator>();
+
+		public void AddInterpolator ( IInterpolator interpolator )
+		{
+			if ( interpolator is Object )
+			{
+				interpolators.Add( interpolator as Object );
+			}
+			else
+			{
+				interfaces.Add( interpolator );
+			}
+		}
+
+		public bool RemoveInterpolator ( IInterpolator interpolator )
+		{
+			if ( interpolator is Object )
+			{
+				return interpolators.Remove( interpolator as Object );
+			}
+			else
+			{
+				return interfaces.Remove( interpolator );
+			}
+		}
+
 		[Tooltip( "Sibling Tweeners will have their tweens interrupted any time this Tweener starts a new tween." )]
 		public List<Tweener> siblings = new List<Tweener>( 0 );
 

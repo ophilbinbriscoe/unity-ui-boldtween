@@ -21,6 +21,11 @@ namespace ToBoldlyPlay.Tweening
 			{
 				return a;
 			}
+
+			set
+			{
+				a = value;
+			}
 		}
 
 		[SerializeField]
@@ -31,6 +36,11 @@ namespace ToBoldlyPlay.Tweening
 			get
 			{
 				return b;
+			}
+
+			set
+			{
+				b = value;
 			}
 		}
 
