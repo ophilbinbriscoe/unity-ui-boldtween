@@ -1,0 +1,178 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace BoldTween
+{
+	public class InOut : MonoBehaviour
+#if UNITY_EDITOR
+		, IEditModePlayback
+#endif
+	{
+		public enum Direction
+		{
+			None,
+			In,
+			Out
+		}
+
+		[SerializeField]
+		[HideInInspector]
+		private float position;
+
+		[SerializeField]
+		[HideInInspector]
+		private Direction direction;
+
+		public float Position
+		{
+			get
+			{
+				return position;
+			}
+
+			set
+			{
+				onTween.Invoke( curve.Evaluate( position = Mathf.Clamp01( value ), reverse, invert ) );
+			}
+		}
+
+		[SerializeField]
+		[Range( 0.0f, 1.0f )]
+		private float initialPosition;
+
+#if UNITY_EDITOR
+		[SerializeField]
+		[Range( 0.0f, 1.0f )]
+		public float previewPosition = 1.0f;
+
+		[SerializeField]
+		[HideInInspector]
+		private Direction previewDirection;
+
+		bool IEditModePlayback.RequiresEditModeRepaint
+		{
+			get
+			{
+				return previewDirection != Direction.None;
+			}
+		}
+#endif
+
+		[SerializeField]
+		private float duration = 1.0f;
+
+		[Space]
+
+		[SerializeField]
+		private AnimationCurve curve = AnimationCurve.Linear( 0.0f, 0.0f, 1.0f, 1.0f );
+
+		[SerializeField]
+		private bool reverse, invert;
+
+		[SerializeField]
+		private TweenEvent onTween;
+
+#if UNITY_EDITOR
+		[SerializeField]
+		private int listenerCount;
+
+		protected virtual void OnDrawGizmos ()
+		{
+			if ( !Application.isPlaying )
+			{
+				Position = previewPosition;
+			}
+		}
+
+		protected virtual void OnValidate ()
+		{
+			// enforce a curve that starts at 0,0 and ends at 1,1
+			curve.NormalizeDomain().NormalizeRange();
+
+			// when the user adds a new 
+			if ( listenerCount < (listenerCount = onTween.GetPersistentEventCount()) )
+			{
+				onTween.SetPersistentListenerState( listenerCount - 1, UnityEngine.Events.UnityEventCallState.EditorAndRuntime );
+			}
+
+			if ( !Application.isPlaying )
+			{
+				onTween.Invoke( curve.Evaluate( previewPosition, reverse, invert ) );
+			}
+		}
+
+		bool IEditModePlayback.EditModeUpdate ()
+		{
+			bool done = false;
+
+			switch ( previewDirection )
+			{
+			case Direction.In:
+				previewPosition = Mathf.Clamp01( previewPosition + EditModePlayback.deltaTime / duration);
+
+				done = previewPosition == 1.0f;
+				break;
+
+			case Direction.Out:
+				previewPosition = Mathf.Clamp01( previewPosition - EditModePlayback.deltaTime / duration);
+
+				done = previewPosition == 1.0f;
+				break;
+
+			default:
+				return true;
+			}
+
+			onTween.Invoke( curve.Evaluate( previewPosition, reverse, invert ) );
+
+			return done;
+		}
+#endif
+
+		protected virtual void Awake ()
+		{
+			Position = initialPosition;
+		}
+
+		protected virtual void Update ()
+		{
+			switch ( direction )
+			{
+			case Direction.In:
+				Position += Time.deltaTime / duration;
+
+				if ( Position == 1.0f )
+				{
+					direction = Direction.None;
+				}
+				break;
+			case Direction.Out:
+				Position -= Time.deltaTime / duration;
+
+				if ( Position == 1.0f )
+				{
+					direction = Direction.None;
+				}
+				break;
+			}
+		}
+
+		public void In ()
+		{
+			direction = Direction.In;
+		}
+
+		public void Out ()
+		{
+			direction = Direction.Out;
+		}
+
+		public void Stop ()
+		{
+			direction = Direction.None;
+		}
+	}
+}
