@@ -45,10 +45,10 @@ namespace BoldTween
 		private float mass = 0.1f;
 
 		[SerializeField]
-		private float strength = 16.0f;
+		private float strength = 8.0f;
 
 		[SerializeField]
-		private AnimationCurve dampingCurve = AnimationCurve.EaseInOut( 0.0f, 0.1f, 1.0f, 0.9f );
+		private AnimationCurve dampingCurve = AnimationCurve.Linear( 0.0f, 0.9f, 1.0f, 0.7f );
 
 		[SerializeField]
 		private float dampingCoefficient = 1.0f;
@@ -73,7 +73,7 @@ namespace BoldTween
 		[SerializeField]
 		[Range( 1, 16 )]
 		[Tooltip( "How many solver iterations to perform each time FixedUpdate is called.")]
-		private int steps = 2;
+		private int steps = 4;
 
 #if UNITY_EDITOR
 		[SerializeField]
