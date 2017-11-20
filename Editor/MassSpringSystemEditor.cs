@@ -21,7 +21,9 @@ namespace BoldTween
 		{
 			serializedObject.Update();
 
-			EditorGUILayout.PropertyField( positionProperty, new GUIContent( "targetPosition", "Goal for the mass spring system." ) );
+			EditorGUILayout.Space();
+
+			EditorGUILayout.PropertyField( positionProperty, new GUIContent( "Target Position", "Goal for the mass spring system." ) );
 
 			DrawPropertiesExcluding( serializedObject, "m_Script", "position" );
 

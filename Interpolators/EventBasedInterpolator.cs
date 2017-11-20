@@ -16,6 +16,23 @@ namespace BoldTween
 		[SerializeField]
 		private InterpolatorEvent onInterpolate;
 
+#if UNITY_EDITOR
+		[SerializeField]
+		[HideInInspector]
+		private int listenerCount;
+
+		protected override void OnValidate ()
+		{
+			base.OnValidate();
+
+
+			if ( listenerCount < (listenerCount = onInterpolate.GetPersistentEventCount()) )
+			{
+				onInterpolate.SetPersistentListenerState( listenerCount - 1, UnityEventCallState.EditorAndRuntime );
+			}
+		}
+#endif
+
 		protected override void OnInterpolate ( T value )
 		{
 			onInterpolate.Invoke( value );

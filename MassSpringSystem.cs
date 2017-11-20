@@ -87,6 +87,10 @@ namespace BoldTween
 			}
 		}
 
+		[SerializeField]
+		[HideInInspector]
+		private int listenerCount;
+
 		protected override void OnValidate ()
 		{
 			base.OnValidate();
@@ -100,7 +104,12 @@ namespace BoldTween
 				EditModePlayback.Unregister( this );
 			}
 
-			onPositionChanged.Invoke( currentPosition );
+			if ( listenerCount < (listenerCount = onPositionChanged.GetPersistentEventCount()) )
+			{
+				onPositionChanged.SetPersistentListenerState( listenerCount - 1, UnityEngine.Events.UnityEventCallState.EditorAndRuntime );
+			}
+
+			onPositionChanged.Invoke( currentPosition );	
 		}
 
 		bool IEditModePlayback.EditModeUpdate ()
@@ -110,6 +119,8 @@ namespace BoldTween
 			return !executeInEditMode;
 		}
 #endif
+
+		[Space]
 
 		[SerializeField]
 		private TweenEvent onPositionChanged;

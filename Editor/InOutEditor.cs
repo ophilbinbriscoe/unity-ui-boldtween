@@ -14,9 +14,13 @@ namespace BoldTween
 		{
 			serializedObject.Update();
 
-			DrawPropertiesExcluding( serializedObject, "m_Script" );
+			EditorGUILayout.Space();
+
+			DrawPropertiesExcluding( serializedObject, "m_Script", "onTween" );
 
 			var tweener = target as InOut;
+
+			EditorGUILayout.Space();
 
 			GUILayout.BeginHorizontal();
 
@@ -61,6 +65,10 @@ namespace BoldTween
 			}
 
 			GUILayout.EndHorizontal();
+
+			EditorGUILayout.Space();
+
+			EditorGUILayout.PropertyField( serializedObject.FindProperty( "onTween" ) );
 
 			serializedObject.ApplyModifiedProperties();
 		}

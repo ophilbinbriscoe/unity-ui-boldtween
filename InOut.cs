@@ -83,6 +83,7 @@ namespace BoldTween
 
 #if UNITY_EDITOR
 		[SerializeField]
+		[HideInInspector]
 		private int listenerCount;
 
 		protected virtual void OnValidate ()

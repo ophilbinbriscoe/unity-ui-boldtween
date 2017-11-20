@@ -108,12 +108,13 @@ namespace BoldTween
 				return;
 			}
 
-			float pad = OverLerp( -padding.@out, padding.@in, t );
-
 			if ( invert )
 			{
 				t = 1.0f - t;
 			}
+
+			float pad = OverLerp( -padding.@out, padding.@in, t );
+
 
 			if ( edge < Edge.Top )
 			{
