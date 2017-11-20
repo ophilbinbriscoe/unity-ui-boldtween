@@ -45,10 +45,10 @@ namespace BoldTween
 		private float mass = 0.1f;
 
 		[SerializeField]
-		private float strength = 8.0f;
+		private float strength = 10.0f;
 
 		[SerializeField]
-		private AnimationCurve dampingCurve = AnimationCurve.Linear( 0.0f, 0.9f, 1.0f, 0.7f );
+		private AnimationCurve dampingCurve = AnimationCurve.Linear( 0.0f, 0.9f, 1.0f, 0.9f );
 
 		[SerializeField]
 		private float dampingCoefficient = 1.0f;
