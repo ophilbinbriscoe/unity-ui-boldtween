@@ -91,11 +91,7 @@ namespace BoldTween
 			// enforce a curve that starts at 0,0 and ends at 1,1
 			curve.NormalizeDomain().NormalizeRange();
 
-			// when the user adds a new 
-			if ( listenerCount < (listenerCount = onTween.GetPersistentEventCount()) )
-			{
-				onTween.SetPersistentListenerState( listenerCount - 1, UnityEngine.Events.UnityEventCallState.EditorAndRuntime );
-			}
+			onTween.OnValidate();
 
 			if ( !Application.isPlaying )
 			{

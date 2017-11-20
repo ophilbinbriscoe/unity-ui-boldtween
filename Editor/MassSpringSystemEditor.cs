@@ -11,10 +11,12 @@ namespace BoldTween
 	public class MassSpringSystemEditor : Editor
 	{
 		SerializedProperty positionProperty;
+		SerializedProperty currentPositionProperty;
 
 		private void OnEnable ()
 		{
 			positionProperty = serializedObject.FindProperty( "position" );
+			currentPositionProperty = serializedObject.FindProperty( "springPosition" );
 		}
 
 		public override void OnInspectorGUI ()
@@ -25,7 +27,12 @@ namespace BoldTween
 
 			EditorGUILayout.PropertyField( positionProperty, new GUIContent( "Target Position", "Goal for the mass spring system." ) );
 
-			DrawPropertiesExcluding( serializedObject, "m_Script", "position" );
+			using ( new EditorGUI.DisabledScope( true ) )
+			{
+				EditorGUILayout.PropertyField( currentPositionProperty );
+			}
+
+			DrawPropertiesExcluding( serializedObject, "m_Script", "position", "springPosition" );
 
 			serializedObject.ApplyModifiedProperties();
 		}

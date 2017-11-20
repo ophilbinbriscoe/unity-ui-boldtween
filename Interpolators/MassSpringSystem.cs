@@ -6,6 +6,10 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace BoldTween
 {
 	[ExecuteInEditMode]
@@ -36,8 +40,9 @@ namespace BoldTween
 		}
 
 		[SerializeField]
+		[Range( -1.0f, 2.0f )]
 		[Tooltip( "Current state of the mass spring system.")]
-		private float currentPosition;
+		private float springPosition;
 
 		[Header( "Mass Spring System" )]
 
@@ -62,7 +67,7 @@ namespace BoldTween
 		private float sleepVelocity = 0.001f;
 
 		[SerializeField]
-		//[HideInInspector]
+		[HideInInspector]
 		private float velocity;
 
 		[Header( "Solver" )]
@@ -87,10 +92,6 @@ namespace BoldTween
 			}
 		}
 
-		[SerializeField]
-		[HideInInspector]
-		private int listenerCount;
-
 		protected override void OnValidate ()
 		{
 			base.OnValidate();
@@ -104,19 +105,24 @@ namespace BoldTween
 				EditModePlayback.Unregister( this );
 			}
 
-			if ( listenerCount < (listenerCount = onPositionChanged.GetPersistentEventCount()) )
-			{
-				onPositionChanged.SetPersistentListenerState( listenerCount - 1, UnityEngine.Events.UnityEventCallState.EditorAndRuntime );
-			}
+			onPositionChanged.OnValidate();
 
-			onPositionChanged.Invoke( currentPosition );	
+			onPositionChanged.Invoke( springPosition );	
+		}
+
+		private void OnDrawGizmos ()
+		{
+			if ( executeInEditMode && !CanSleepAt( position - springPosition ) )
+			{
+				EditModePlayback.Register( this );
+			}
 		}
 
 		bool IEditModePlayback.EditModeUpdate ()
 		{
 			Step( EditModePlayback.deltaTime, steps );
 
-			return !executeInEditMode;
+			return !executeInEditMode || CanSleepAt( position - springPosition );
 		}
 #endif
 
@@ -127,7 +133,7 @@ namespace BoldTween
 
 		private void Start ()
 		{
-			onPositionChanged.Invoke( currentPosition = position );
+			onPositionChanged.Invoke( springPosition = position );
 		}
 
 		private void FixedUpdate ()
@@ -151,10 +157,13 @@ namespace BoldTween
 				return;
 			}
 
-			float distance = position - currentPosition;
+			float distance = position - springPosition;
 
 			if ( CanSleepAt( distance ) )
 			{
+				springPosition = position;
+				velocity = 0.0f;
+
 				return;
 			}
 
@@ -162,9 +171,9 @@ namespace BoldTween
 
 			for ( int i = 0; i < steps; i++ )
 			{
-				currentPosition += velocity * deltaTime;
+				springPosition += velocity * deltaTime;
 
-				distance = position - currentPosition;
+				distance = position - springPosition;
 
 				switch ( implementation )
 				{
@@ -185,14 +194,14 @@ namespace BoldTween
 
 				if ( CanSleepAt( distance ) )
 				{
-					currentPosition = position;
+					springPosition = position;
 					velocity = 0.0f;
 
 					break;
 				}
 			}
 
-			onPositionChanged.Invoke( currentPosition );
+			onPositionChanged.Invoke( springPosition );
 		}
 
 		private bool CanSleepAt ( float distance )

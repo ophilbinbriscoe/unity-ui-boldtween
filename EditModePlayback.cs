@@ -12,6 +12,12 @@ public interface IEditModePlayback
 [InitializeOnLoad]
 public static class EditModePlayback
 {
+	[MenuItem( "Tools/BoldTween/Print Registered IEditModePlayback Count" )]
+	public static void PrintRegisteredCount ()
+	{
+		Debug.LogFormat( "Registered IEditModePlayback Count: {0}", receivers.Count );
+	}
+
 	private static HashSet<IEditModePlayback> receivers;
 
 	static EditModePlayback ()
