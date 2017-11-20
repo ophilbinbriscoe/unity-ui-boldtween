@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BoldTween
+namespace BoldTween.UI
 {
-	public class TwistInterpolator : RectTransformInterpolator<float>
+	public class UITwistInterpolator : RectTransformInterpolator<float>
 	{
 		protected override float Interpolate ( float a, float b, float t )
 		{

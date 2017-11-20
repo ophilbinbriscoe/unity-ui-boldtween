@@ -27,6 +27,8 @@ namespace BoldTween
 			set
 			{
 				falseThreshold = Mathf.Clamp01( value );
+
+				Fix();
 			}
 		}
 
@@ -44,17 +46,50 @@ namespace BoldTween
 			set
 			{
 				trueThreshold = Mathf.Clamp01( value );
+
+				Fix();
 			}
 		}
+
+		private void Fix ()
+		{
+			if ( falseThreshold >= trueThreshold )
+			{
+				if ( trueThreshold == 0.0f )
+				{
+					trueThreshold += float.Epsilon;
+				}
+				else
+				{
+					falseThreshold -= float.Epsilon;
+				}
+			}
+		}
+
+#if UNITY_EDITOR
+		protected override void OnValidate ()
+		{
+			base.OnValidate();
+
+			Fix();
+		}
+#endif
 
 		[SerializeField]
 		private BoolEvent onValueChanged;
 
 		[SerializeField]
-		[HideInInspector]
+		//[HideInInspector]
 		private bool value;
 
+		[SerializeField]
+		//[HideInInspector]
 		private bool init;
+
+		private void Awake ()
+		{
+			init = false;
+		}
 
 		protected override void OnInterpolate ( float t )
 		{
@@ -77,9 +112,13 @@ namespace BoldTween
 
 			if ( value != this.value || !init )
 			{
+#if UNITY_EDITOR
+				init = Application.isPlaying;
+#else
 				init = true;
+#endif
 
-				onValueChanged.Invoke( this.value );
+				onValueChanged.Invoke( this.value = value );
 			}
 		}
 	}

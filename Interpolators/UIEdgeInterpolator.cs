@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BoldTween
+namespace BoldTween.UI
 {
 	[Serializable]
 	public struct EdgePadding
@@ -26,7 +26,7 @@ namespace BoldTween
 		Bottom = 4
 	}
 
-	public class EdgeInterpolator : RectTransformInterpolator
+	public class UIEdgeInterpolator : RectTransformInterpolator
 	{
 		[SerializeField]
 		private bool invert;
