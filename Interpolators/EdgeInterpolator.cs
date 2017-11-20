@@ -29,6 +29,9 @@ namespace BoldTween
 	public class EdgeInterpolator : RectTransformInterpolator
 	{
 		[SerializeField]
+		private bool invert;
+
+		[SerializeField]
 		private Edge edge;
 
 		public Edge Edge
@@ -106,6 +109,11 @@ namespace BoldTween
 			}
 
 			float pad = OverLerp( -padding.@out, padding.@in, t );
+
+			if ( invert )
+			{
+				t = 1.0f - t;
+			}
 
 			if ( edge < Edge.Top )
 			{
