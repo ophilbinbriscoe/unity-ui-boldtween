@@ -91,19 +91,19 @@ namespace BoldTween
 						{
 							if ( property.PropertyType == typeof( Color ) )
 							{
-								var color = (Color) property.GetValue( target );
+								var color = (Color) property.GetValue( target, null );
 
 								color.a = alpha;
 
-								property.SetValue( target, color );
+								property.SetValue( target, color, null );
 							}
 							else if ( property.PropertyType == typeof( Color32 ) )
 							{
-								var color = (Color32) property.GetValue( target );
+								var color = (Color32) property.GetValue( target, null );
 
 								color.a = (byte) Mathf.RoundToInt( 255 * alpha );
 
-								property.SetValue( target, color );
+								property.SetValue( target, color, null );
 							}
 						}
 					}
