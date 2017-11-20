@@ -41,11 +41,13 @@ namespace BoldTween
 
 		[SerializeField]
 		[Range( 0.0f, 1.0f )]
+		[Tooltip( "Set in Awake." )]
 		private float initialPosition;
 
 #if UNITY_EDITOR
 		[SerializeField]
 		[Range( 0.0f, 1.0f )]
+		[Tooltip( "Used in edit mode." )]
 		public float previewPosition = 1.0f;
 
 		[SerializeField]
@@ -62,7 +64,11 @@ namespace BoldTween
 #endif
 
 		[SerializeField]
+		[Tooltip( "How long it takes to tween from fully in to fully out or viceversa." )]
 		private float duration = 1.0f;
+
+		[SerializeField]
+		private bool runInFixedUpdate;
 
 		[Space]
 
@@ -78,14 +84,6 @@ namespace BoldTween
 #if UNITY_EDITOR
 		[SerializeField]
 		private int listenerCount;
-
-		protected virtual void OnDrawGizmos ()
-		{
-			if ( !Application.isPlaying )
-			{
-				Position = previewPosition;
-			}
-		}
 
 		protected virtual void OnValidate ()
 		{
@@ -137,8 +135,39 @@ namespace BoldTween
 			Position = initialPosition;
 		}
 
+		protected virtual void FixedUpdate ()
+		{
+			if ( runInFixedUpdate )
+			{
+				switch ( direction )
+				{
+				case Direction.In:
+					Position += Time.fixedDeltaTime / duration;
+
+					if ( Position == 1.0f )
+					{
+						direction = Direction.None;
+					}
+					break;
+				case Direction.Out:
+					Position -= Time.fixedDeltaTime / duration;
+
+					if ( Position == 1.0f )
+					{
+						direction = Direction.None;
+					}
+					break;
+				}
+			}
+		}
+
 		protected virtual void Update ()
 		{
+			if ( runInFixedUpdate )
+			{
+				return;
+			}
+
 			switch ( direction )
 			{
 			case Direction.In:

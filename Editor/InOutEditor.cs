@@ -12,7 +12,9 @@ namespace BoldTween
 	{
 		public override void OnInspectorGUI ()
 		{
-			base.OnInspectorGUI();
+			serializedObject.Update();
+
+			DrawPropertiesExcluding( serializedObject, "m_Script" );
 
 			var tweener = target as InOut;
 
@@ -28,8 +30,6 @@ namespace BoldTween
 				{
 					serializedObject.FindProperty( "previewDirection" ).enumValueIndex = 1;
 
-					serializedObject.ApplyModifiedProperties();
-
 					EditModePlayback.Register( tweener );
 				}
 			}
@@ -44,8 +44,6 @@ namespace BoldTween
 				{
 					serializedObject.FindProperty( "previewDirection" ).enumValueIndex = 2;
 
-					serializedObject.ApplyModifiedProperties();
-
 					EditModePlayback.Register( tweener );
 				}
 			}
@@ -59,12 +57,12 @@ namespace BoldTween
 				else
 				{
 					serializedObject.FindProperty( "previewDirection" ).enumValueIndex = 0;
-
-					serializedObject.ApplyModifiedProperties();
 				}
 			}
 
 			GUILayout.EndHorizontal();
+
+			serializedObject.ApplyModifiedProperties();
 		}
 	}
 }

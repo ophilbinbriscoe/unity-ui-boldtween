@@ -105,7 +105,7 @@ namespace BoldTween
 				return;
 			}
 
-			float pad = Mathf.Lerp( -padding.@out, padding.@in, t );
+			float pad = OverLerp( -padding.@out, padding.@in, t );
 
 			if ( edge < Edge.Top )
 			{
@@ -126,7 +126,7 @@ namespace BoldTween
 			{
 			case Edge.Left:
 
-				rect.pivot = Vector2.Lerp( new Vector2( 1.0f, rect.pivot.y ), new Vector2( 0.0f, rect.pivot.y ), t );
+				rect.pivot = OverLerp( new Vector2( 1.0f, rect.pivot.y ), new Vector2( 0.0f, rect.pivot.y ), t );
 				rect.anchorMin = new Vector2( 0.0f, rect.anchorMin.y );
 				rect.anchorMax = new Vector2( 0.0f, rect.anchorMax.y );
 				rect.anchoredPosition = new Vector2( pad, rect.anchoredPosition.y );
@@ -134,7 +134,7 @@ namespace BoldTween
 
 			case Edge.Right:
 
-				rect.pivot = Vector2.Lerp( new Vector2( 0.0f, rect.pivot.y ), new Vector2( 1.0f, rect.pivot.y ), t );
+				rect.pivot = OverLerp( new Vector2( 0.0f, rect.pivot.y ), new Vector2( 1.0f, rect.pivot.y ), t );
 				rect.anchorMin = new Vector2( 1.0f, rect.anchorMin.y );
 				rect.anchorMax = new Vector2( 1.0f, rect.anchorMax.y );
 				rect.anchoredPosition = new Vector2( -pad, rect.anchoredPosition.y );
@@ -142,7 +142,7 @@ namespace BoldTween
 
 			case Edge.Top:
 
-				rect.pivot = Vector2.Lerp( new Vector2( rect.pivot.x, 0.0f ), new Vector2( rect.pivot.x, 1.0f ), t );
+				rect.pivot = OverLerp( new Vector2( rect.pivot.x, 0.0f ), new Vector2( rect.pivot.x, 1.0f ), t );
 				rect.anchorMin = new Vector2( rect.anchorMin.x, 1.0f );
 				rect.anchorMax = new Vector2( rect.anchorMax.x, 1.0f );
 				rect.anchoredPosition = new Vector2( rect.anchoredPosition.x, -pad );
@@ -150,12 +150,42 @@ namespace BoldTween
 
 			case Edge.Bottom:
 
-				rect.pivot = Vector2.Lerp( new Vector2( rect.pivot.x, 1.0f ), new Vector2( rect.pivot.x, 0.0f ), t );
+				rect.pivot = OverLerp( new Vector2( rect.pivot.x, 1.0f ), new Vector2( rect.pivot.x, 0.0f ), t );
 				rect.anchorMin = new Vector2( rect.anchorMin.x, 0.0f );
 				rect.anchorMax = new Vector2( rect.anchorMax.x, 0.0f );
 				rect.anchoredPosition = new Vector2( rect.anchoredPosition.x, pad );
 				break;
 			}
+		}
+
+		private float OverLerp ( float a, float b, float t )
+		{
+			if ( t == 0.0f )
+			{
+				return a;
+			}
+
+			if ( t == 1.0f )
+			{
+				return b;
+			}
+
+			return a += (b - a) * t;
+		}
+
+		private Vector2 OverLerp ( Vector2 a, Vector2 b, float t )
+		{
+			if ( t == 0.0f )
+			{
+				return a;
+			}
+
+			if ( t == 1.0f )
+			{
+				return b;
+			}
+
+			return a += (b - a) * t;
 		}
 	}
 }
