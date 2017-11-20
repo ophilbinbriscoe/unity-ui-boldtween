@@ -82,10 +82,6 @@ namespace BoldTween
 		private TweenEvent onTween;
 
 #if UNITY_EDITOR
-		[SerializeField]
-		[HideInInspector]
-		private int listenerCount;
-
 		protected virtual void OnValidate ()
 		{
 			// enforce a curve that starts at 0,0 and ends at 1,1
@@ -114,7 +110,7 @@ namespace BoldTween
 			case Direction.Out:
 				previewPosition = Mathf.Clamp01( previewPosition - EditModePlayback.deltaTime / duration);
 
-				done = previewPosition == 1.0f;
+				done = previewPosition == 0.0f;
 				break;
 
 			default:
@@ -122,6 +118,11 @@ namespace BoldTween
 			}
 
 			onTween.Invoke( curve.Evaluate( previewPosition, reverse, invert ) );
+
+			if ( done )
+			{
+				previewDirection = Direction.None;
+			}
 
 			return done;
 		}

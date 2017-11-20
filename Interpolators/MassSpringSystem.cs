@@ -39,12 +39,28 @@ namespace BoldTween
 			Implicit
 		}
 
+		public float TargetPosition
+		{
+			get
+			{
+				return position;
+			}
+		}
+
 		[SerializeField]
 		[Range( -1.0f, 2.0f )]
 		[Tooltip( "Current state of the mass spring system.")]
 		private float springPosition;
 
-		[Header( "Mass Spring System" )]
+		public float SpringPosition
+		{
+			get
+			{
+				return springPosition;
+			}
+		}
+
+		[Header( "Parameters" )]
 
 		[SerializeField]
 		private float mass = 0.1f;
@@ -88,7 +104,7 @@ namespace BoldTween
 		{
 			get
 			{
-				return velocity != 0.0f;
+				return !CanSleepAt( position - springPosition );
 			}
 		}
 
@@ -204,7 +220,7 @@ namespace BoldTween
 			onPositionChanged.Invoke( springPosition );
 		}
 
-		private bool CanSleepAt ( float distance )
+		public bool CanSleepAt ( float distance )
 		{
 			return Mathf.Abs( distance ) < sleepDistance && Mathf.Abs( velocity ) < sleepVelocity;
 		}
@@ -217,6 +233,13 @@ namespace BoldTween
 		protected override void OnInterpolate ( float value )
 		{
 			position = value;
+
+#if UNITY_EDITOR
+			if ( !Application.isPlaying && executeInEditMode )
+			{
+				EditModePlayback.Register( this );
+			}
+#endif
 		}
 	}
 }

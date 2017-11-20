@@ -12,13 +12,26 @@ public interface IEditModePlayback
 [InitializeOnLoad]
 public static class EditModePlayback
 {
-	[MenuItem( "Tools/BoldTween/Print Registered IEditModePlayback Count" )]
-	public static void PrintRegisteredCount ()
+	private static HashSet<IEditModePlayback> receivers;
+
+	public static int ReceiverCount
 	{
-		Debug.LogFormat( "Registered IEditModePlayback Count: {0}", receivers.Count );
+		get
+		{
+			return receivers.Count;
+		}
 	}
 
-	private static HashSet<IEditModePlayback> receivers;
+	public static IEnumerable<IEditModePlayback> Receivers
+	{
+		get
+		{
+			foreach ( var receiver in receivers )
+			{
+				yield return receiver;
+			}
+		}
+	}
 
 	static EditModePlayback ()
 	{
@@ -33,29 +46,39 @@ public static class EditModePlayback
 
 	public static float deltaTime { get; private set; }
 
+	private static bool repaint;
+
+	public static bool DidRepaint
+	{
+		get
+		{
+			return repaint;
+		}
+	}
+
 	private static void Update ()
 	{
 		deltaTime = (float) (EditorApplication.timeSinceStartup - time);
 
+		repaint = false;
+
+		foreach ( var receiver in register )
+		{
+			receivers.Add( receiver );
+		}
+
+		register.Clear();
+
 		if ( !Application.isPlaying && receivers.Count > 0 )
 		{
-			var done = new List<IEditModePlayback>();
-
-			var repaint = false;
-
 			foreach ( var receiver in receivers )
 			{
 				if ( receiver.EditModeUpdate() )
 				{
-					done.Add( receiver );
-
-					repaint |= receiver.RequiresEditModeRepaint;
+					unregister.Add( receiver );
 				}
-			}
 
-			foreach ( var receiver in done )
-			{
-				receivers.Remove( receiver );
+				repaint |= receiver.RequiresEditModeRepaint;
 			}
 
 			if ( repaint )
@@ -64,17 +87,28 @@ public static class EditModePlayback
 			}
 		}
 
+		foreach ( var receiver in unregister )
+		{
+			receivers.Remove( receiver );
+		}
+
+		unregister.Clear();
+
 		time = EditorApplication.timeSinceStartup;
 	}
 
+	private static List<IEditModePlayback> register = new List<IEditModePlayback>();
+
 	public static void Register ( IEditModePlayback receiver )
 	{
-		receivers.Add( receiver );
+		register.Add( receiver );
 	}
+
+	private static List<IEditModePlayback> unregister = new List<IEditModePlayback>();
 
 	public static void Unregister ( IEditModePlayback receiver )
 	{
-		receivers.Remove( receiver );
+		unregister.Add( receiver );
 	}
 }
 #endif

@@ -10,6 +10,11 @@ namespace BoldTween
 	[CustomEditor( typeof( InOut ) )]
 	public class InOutEditor : Editor
 	{
+		private int EnumValueIndex ( InOut.Direction direction )
+		{
+			return Array.IndexOf( Enum.GetValues( typeof( InOut.Direction ) ) as InOut.Direction[], direction );
+		}
+
 		public override void OnInspectorGUI ()
 		{
 			serializedObject.Update();
@@ -32,7 +37,7 @@ namespace BoldTween
 				}
 				else
 				{
-					serializedObject.FindProperty( "previewDirection" ).enumValueIndex = 1;
+					serializedObject.FindProperty( "previewDirection" ).enumValueIndex = EnumValueIndex( InOut.Direction.In );
 
 					EditModePlayback.Register( tweener );
 				}
@@ -46,7 +51,7 @@ namespace BoldTween
 				}
 				else
 				{
-					serializedObject.FindProperty( "previewDirection" ).enumValueIndex = 2;
+					serializedObject.FindProperty( "previewDirection" ).enumValueIndex = EnumValueIndex( InOut.Direction.Out );
 
 					EditModePlayback.Register( tweener );
 				}
@@ -60,8 +65,13 @@ namespace BoldTween
 				}
 				else
 				{
-					serializedObject.FindProperty( "previewDirection" ).enumValueIndex = 0;
+					serializedObject.FindProperty( "previewDirection" ).enumValueIndex = EnumValueIndex( InOut.Direction.None );
 				}
+			}
+
+			using ( new EditorGUI.DisabledScope( true ) )
+			{
+				EditorGUILayout.PropertyField( serializedObject.FindProperty( "previewDirection" ), GUIContent.none );
 			}
 
 			GUILayout.EndHorizontal();
