@@ -5,6 +5,11 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
+using System;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace BoldTween.Sequences
 {
@@ -19,12 +24,21 @@ namespace BoldTween.Sequences
 		[SerializeField]
 		private bool runInUnscaledTime;
 
+#if UNITY_EDITOR
 		[SerializeField]
-		//[HideInInspector]
+		private bool lockReloadingAssemblies;
+
+		[SerializeField]
+		[HideInInspector]
+		private bool lockedReloadingAssemblies;
+#endif
+
+		[SerializeField]
+		[HideInInspector]
 		private bool isPlaying;
 
 		[SerializeField]
-		//[HideInInspector]
+		[HideInInspector]
 		private int index;
 
 		[SerializeField]
@@ -118,14 +132,52 @@ namespace BoldTween.Sequences
 			}
 		}
 
-		public void Play ()
+		private class WaitForSequence : CustomYieldInstruction
+		{
+			private readonly Sequence sequence;
+
+			public override bool keepWaiting
+			{
+				get
+				{
+					return sequence.isPlaying;
+				}
+			}
+
+			public WaitForSequence ( Sequence sequence )
+			{
+				this.sequence = sequence;
+			}
+		}
+
+		public CustomYieldInstruction Play ()
 		{
 			isPlaying = true;
+
+#if UNITY_EDITOR
+			if ( lockReloadingAssemblies )
+			{
+				EditorApplication.LockReloadAssemblies();
+
+				lockedReloadingAssemblies = true;
+			}
+#endif
+
+			return new WaitForSequence( this );
 		}
 
 		public void Stop ()
 		{
 			isPlaying = false;
+
+#if UNITY_EDITOR
+			if ( lockedReloadingAssemblies )
+			{
+				EditorApplication.UnlockReloadAssemblies();
+
+				lockedReloadingAssemblies = false;
+			}
+#endif
 		}
 
 		public void ResetSequence ( bool stop = false )
