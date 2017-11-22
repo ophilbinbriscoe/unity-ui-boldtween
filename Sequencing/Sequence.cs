@@ -24,6 +24,15 @@ namespace BoldTween.Sequences
 		[SerializeField]
 		private bool runInUnscaledTime;
 
+		[SerializeField]
+		private bool waitForGoodDeltaTime;
+
+		[SerializeField]
+		private float goodDeltaTime = 1.0f / 10.0f;
+
+		[SerializeField]
+		private bool hasGoodDeltaTime;
+
 #if UNITY_EDITOR
 		[SerializeField]
 		private bool lockReloadingAssemblies;
@@ -64,6 +73,11 @@ namespace BoldTween.Sequences
 
 		private void FixedUpdate ()
 		{
+			if ( waitForGoodDeltaTime && !hasGoodDeltaTime )
+			{
+				return;
+			}
+
 			if ( !isPlaying )
 			{
 				return;
@@ -79,6 +93,13 @@ namespace BoldTween.Sequences
 
 		private void Update ()
 		{
+			//EvaluateDeltaTime();
+
+			if ( waitForGoodDeltaTime && !hasGoodDeltaTime )
+			{
+				return;
+			}
+
 			if ( !isPlaying )
 			{
 				return;
@@ -90,6 +111,25 @@ namespace BoldTween.Sequences
 			}
 
 			Tick( runInUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime );
+		}
+
+		private bool EvaluateDeltaTime ()
+		{
+			if ( !hasGoodDeltaTime )
+			{
+				Debug.LogFormat( "{0} vs {1}", Time.deltaTime, goodDeltaTime );
+
+				if ( Time.deltaTime <= goodDeltaTime )
+				{
+					return hasGoodDeltaTime = true;
+				}
+				else if ( waitForGoodDeltaTime )
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		private void Tick ( float deltaTime )
@@ -108,7 +148,7 @@ namespace BoldTween.Sequences
 					{
 						if ( ++index >= elements.Length )
 						{
-							isPlaying = false;
+							ResetSequence( true );
 
 							return;
 						}
@@ -128,7 +168,7 @@ namespace BoldTween.Sequences
 			}
 			else
 			{
-				isPlaying = false;
+				ResetSequence( true );
 			}
 		}
 
@@ -188,6 +228,11 @@ namespace BoldTween.Sequences
 			}
 
 			index = 0;
+
+			foreach ( var element in elements )
+			{
+				element.Reset();
+			}
 		}
 	}
 }

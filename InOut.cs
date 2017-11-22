@@ -6,18 +6,18 @@ using UnityEngine;
 
 namespace BoldTween
 {
+	public enum Direction
+	{
+		None,
+		In,
+		Out
+	}
+
 	public class InOut : MonoBehaviour
 #if UNITY_EDITOR
 		, IEditModePlayback
 #endif
 	{
-		public enum Direction
-		{
-			None,
-			In,
-			Out
-		}
-
 		[SerializeField]
 		[HideInInspector]
 		private float position;
@@ -25,6 +25,14 @@ namespace BoldTween
 		[SerializeField]
 		[HideInInspector]
 		private Direction direction;
+
+		public Direction Direction
+		{
+			get
+			{
+				return direction;
+			}
+		}
 
 		public float Position
 		{
@@ -36,6 +44,38 @@ namespace BoldTween
 			set
 			{
 				onTween.Invoke( curve.Evaluate( position = Mathf.Clamp01( value ), reverse, invert ) );
+			}
+		}
+
+		public float TimeElapsed
+		{
+			get
+			{
+				switch ( direction )
+				{
+				case Direction.In:
+					return position * duration;
+				case Direction.Out:
+					return (1.0f - position) * duration;
+				}
+
+				return 0.0f;
+			}
+		}
+
+		public float TimeRemaining
+		{
+			get
+			{
+				switch ( direction )
+				{
+				case Direction.In:
+					return (1.0f - position) * duration;
+				case Direction.Out:
+					return position * duration;
+				}
+
+				return 0.0f;
 			}
 		}
 
@@ -67,8 +107,19 @@ namespace BoldTween
 		[Tooltip( "How long it takes to tween from fully in to fully out or viceversa." )]
 		private float duration = 1.0f;
 
+		public float Duration
+		{
+			get
+			{
+				return duration;
+			}
+		}
+
 		[SerializeField]
 		private bool runInFixedUpdate;
+
+		[SerializeField]
+		private bool runInUnscaledTime;
 
 		[Space]
 
@@ -137,25 +188,7 @@ namespace BoldTween
 		{
 			if ( runInFixedUpdate )
 			{
-				switch ( direction )
-				{
-				case Direction.In:
-					Position += Time.fixedDeltaTime / duration;
-
-					if ( Position == 1.0f )
-					{
-						direction = Direction.None;
-					}
-					break;
-				case Direction.Out:
-					Position -= Time.fixedDeltaTime / duration;
-
-					if ( Position == 1.0f )
-					{
-						direction = Direction.None;
-					}
-					break;
-				}
+				Update( runInUnscaledTime ? Time.fixedUnscaledDeltaTime : Time.fixedDeltaTime );
 			}
 		}
 
@@ -166,10 +199,15 @@ namespace BoldTween
 				return;
 			}
 
+			Update( runInUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime );
+		}
+
+		private void Update ( float deltaTime )
+		{
 			switch ( direction )
 			{
 			case Direction.In:
-				Position += Time.deltaTime / duration;
+				Position += deltaTime / duration;
 
 				if ( Position == 1.0f )
 				{
@@ -177,7 +215,7 @@ namespace BoldTween
 				}
 				break;
 			case Direction.Out:
-				Position -= Time.deltaTime / duration;
+				Position -= deltaTime / duration;
 
 				if ( Position == 1.0f )
 				{

@@ -5,24 +5,62 @@ using System.Text;
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
+using System.Reflection;
 
 namespace BoldTween.Sequences
 {
 	[CustomEditor( typeof( Sequence ) )]
 	public class SequenceEditor : Editor
 	{
-		private static List<Type> elementType;
+		private static List<Type> elementTypes;
 		private static GUIContent[] elementsContent;
 
 		public MonoScript upgradeEffectSource;
 
 		static SequenceEditor ()
 		{
+			elementTypes = new List<Type>();
+
+			GetSubtypesInAssemblies();
+		}
+
+		private static void GetSubtypesInAssemblies ()
+		{
 			var baseType = typeof( SequenceElement );
 
-			elementType = new List<Type>();
+			foreach ( var assembly in AppDomain.CurrentDomain.GetAssemblies() )
+			{
+				if ( assembly.FullName.StartsWith( "Mono.Cecil" ) )
+					continue;
 
-			foreach ( var type in baseType.Assembly.GetTypes() )
+				if ( assembly.FullName.StartsWith( "UnityScript" ) )
+					continue;
+
+				if ( assembly.FullName.StartsWith( "Boo.Lan" ) )
+					continue;
+
+				if ( assembly.FullName.StartsWith( "System" ) )
+					continue;
+
+				if ( assembly.FullName.StartsWith( "I18N" ) )
+					continue;
+
+				if ( assembly.FullName.StartsWith( "UnityEngine" ) )
+					continue;
+
+				if ( assembly.FullName.StartsWith( "UnityEditor" ) )
+					continue;
+
+				if ( assembly.FullName.StartsWith( "mscorlib" ) )
+					continue;
+
+				GetSubtypesInAssembly( assembly, baseType );
+			}
+		}
+
+		private static void GetSubtypesInAssembly ( Assembly assembly, Type baseType )
+		{
+			foreach ( var type in assembly.GetTypes() )
 			{
 				// we only want to deal with fully-implemented elements
 				if ( type.IsAbstract )
@@ -33,15 +71,15 @@ namespace BoldTween.Sequences
 				// check if the type is derrived from SequenceElement
 				if ( baseType.IsAssignableFrom( type ) )
 				{
-					elementType.Add( type );
+					elementTypes.Add( type );
 				}
 			}
 
-			elementsContent = new GUIContent[elementType.Count];
+			elementsContent = new GUIContent[elementTypes.Count];
 
-			for ( int i = 0; i < elementType.Count; i++ )
+			for ( int i = 0; i < elementTypes.Count; i++ )
 			{
-				elementsContent[i] = new GUIContent( NiceTypeName( elementType[i] ) );
+				elementsContent[i] = new GUIContent( NiceTypeName( elementTypes[i] ) );
 			}
 		}
 
@@ -105,8 +143,11 @@ namespace BoldTween.Sequences
 			var headerIcon = effect == null ? EditorGUIUtility.Load( "icons/d_console.warnicon.sml.png" ) as Texture : upgradeEffectSource == null ? null : AssetDatabase.GetCachedIcon( AssetDatabase.GetAssetPath( upgradeEffectSource ) );
 
 			var headerRect = rect.SetHeight( EditorGUIUtility.singleLineHeight ).PadLeft( 12f ).PadHorizontal( 2f ).DisplaceY( 2f );
-			var headerStyle = new GUIStyle( EditorStyles.foldout );
 
+			var hasVisisbleProperties = EditorGUI.GetPropertyHeight( effectProperty ) > EditorGUIUtility.singleLineHeight;
+
+			var headerStyle = new GUIStyle( hasVisisbleProperties ? EditorStyles.foldout : EditorStyles.label );
+			
 			Color color = headerStyle.normal.textColor * 1.2f;
 
 			headerStyle.fontStyle = FontStyle.Bold;
@@ -125,13 +166,22 @@ namespace BoldTween.Sequences
 				Selection.activeObject = effect;
 			}
 
-			if ( effectProperty.isExpanded = EditorGUI.Foldout( headerRect, effectProperty.isExpanded, new GUIContent( string.Format( " {0}", headerText ), headerIcon ), headerStyle ) )
+			var headerContent = new GUIContent( string.Format( " {0}", headerText ), headerIcon );
+
+			if ( hasVisisbleProperties )
 			{
-				var effectPropertiesRect = rect.PadTop( EditorGUIUtility.singleLineHeight + 2f ).PadHorizontal( 4f ).PadRight( 1f );
+				if ( effectProperty.isExpanded = EditorGUI.Foldout( headerRect, effectProperty.isExpanded, headerContent, headerStyle ) )
+				{
+					var effectPropertiesRect = rect.PadTop( EditorGUIUtility.singleLineHeight + 2f ).PadHorizontal( 4f ).PadRight( 1f );
 
-				GUI.Box( effectPropertiesRect.PadHorizontal( -2f ).PadBottom( 1f ), GUIContent.none, (GUIStyle) "CN Box" );
+					GUI.Box( effectPropertiesRect.PadHorizontal( -2f ).PadBottom( 1f ), GUIContent.none, (GUIStyle) "CN Box" );
 
-				EditorGUI.PropertyField( effectPropertiesRect.PadTop( 2f ), effectProperty );
+					EditorGUI.PropertyField( effectPropertiesRect.PadTop( 2f ), effectProperty );
+				}
+			}
+			else
+			{
+				EditorGUI.LabelField( headerRect, headerContent, headerStyle );
 			}
 		}
 
@@ -153,7 +203,7 @@ namespace BoldTween.Sequences
 
 				var elementProperty = elementsProperty.GetArrayElementAtIndex( index );
 
-				var element = CreateInstance( elementType[selected] );
+				var element = CreateInstance( elementTypes[selected] );
 
 				element.name = elementsContent[selected].text;
 

@@ -10,6 +10,7 @@ namespace BoldTween.Sequences
 	public abstract class Yield : SequenceElement
 	{
 		[SerializeField]
+		[HideInInspector]
 		private bool isDone;
 
 		public override bool IsDone
