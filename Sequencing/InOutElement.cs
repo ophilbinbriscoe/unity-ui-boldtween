@@ -24,5 +24,17 @@ namespace BoldTween.Sequences
 				duration = tweener.Duration;
 			}
 		}
+
+		protected float GetDuration ()
+		{
+			if ( durationFromTweener && tweener != null )
+			{
+				return tweener.Duration;
+			}
+			else
+			{
+				return duration;
+			}
+		}
 	}
 }

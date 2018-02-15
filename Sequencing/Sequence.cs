@@ -31,6 +31,7 @@ namespace BoldTween.Sequences
 		private float goodDeltaTime = 1.0f / 10.0f;
 
 		[SerializeField]
+		[HideInInspector]
 		private bool hasGoodDeltaTime;
 
 #if UNITY_EDITOR
@@ -58,6 +59,13 @@ namespace BoldTween.Sequences
 		{
 			foreach ( var element in elements )
 			{
+				if ( element == null )
+				{
+					Debug.LogError( "Null element.", this );
+
+					continue;
+				}
+
 				element.OnValidate();
 			}
 		}
@@ -138,6 +146,10 @@ namespace BoldTween.Sequences
 			{
 				var element = elements[index];
 
+#if UNITY_EDITOR
+				Break( element );
+#endif
+
 				float infiniteLoopCheck = deltaTime;
 
 				do
@@ -155,6 +167,10 @@ namespace BoldTween.Sequences
 						else
 						{
 							element = elements[index];
+
+#if UNITY_EDITOR
+							Break( element );
+#endif
 						}
 					}
 					else if ( deltaTime == infiniteLoopCheck )
@@ -172,6 +188,16 @@ namespace BoldTween.Sequences
 			}
 		}
 
+#if UNITY_EDITOR
+		private void Break ( SequenceElement element )
+		{
+			if ( element.Break )
+			{
+				Debug.Break();
+			}
+		}
+#endif
+
 		private class WaitForSequence : CustomYieldInstruction
 		{
 			private readonly Sequence sequence;
@@ -188,6 +214,11 @@ namespace BoldTween.Sequences
 			{
 				this.sequence = sequence;
 			}
+		}
+
+		public void PlayWithoutYieldInstruction ()
+		{
+			Play();
 		}
 
 		public CustomYieldInstruction Play ()

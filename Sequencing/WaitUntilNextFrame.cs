@@ -16,7 +16,14 @@ namespace BoldTween.Sequences
 
 		protected override bool ContinueWaiting ()
 		{
-			return done & (done = true);
+			if ( done )
+			{
+				return false;
+			}
+			else
+			{
+				return done = true;
+			}
 		}
 
 		public override void Reset ()

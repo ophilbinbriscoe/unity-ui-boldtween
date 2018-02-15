@@ -9,6 +9,20 @@ namespace BoldTween.Sequences
 {
 	public abstract class SequenceElement : ScriptableObject
 	{
+#if UNITY_EDITOR
+		[SerializeField]
+		[HideInInspector]
+		private bool @break;
+
+		public bool Break
+		{
+			get
+			{
+				return @break;
+			}
+		}
+#endif
+
 		public abstract void Reset ();
 
 		public abstract float Tick ( float deltaTime );

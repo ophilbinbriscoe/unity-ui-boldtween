@@ -13,7 +13,7 @@ namespace BoldTween.Sequences
 		{
 			float overflow = base.Tick( deltaTime );
 
-			tweener.Position = elapsed / duration;
+			tweener.Position = elapsed / GetDuration();
 
 			return overflow;
 		}
